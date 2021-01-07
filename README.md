@@ -44,7 +44,6 @@ Strengthen the network.
     {
       "protocol": "origin",
       "tcp_timeout": 300000, // tcp 超时，默认 300000
-      "tcp_timeout": 300000, // tcp 超时，默认 300000
       "udp_timeout": 300000 // udp 超时，默认 60000
     },
     {

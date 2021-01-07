@@ -33,7 +33,7 @@ Strengthen the network.
       "address": "::", // 监听地址，支持 ipv4 ipv6，默认 "::"
       "port": 1111, // 监听端口，无默认值
       "password": "abcd", // 密码，无默认值
-      "http_header": "", // HTTP 响应头部，默认 "HTTP/1.1 200 OK"
+      "http_header": "", // HTTP 响应头部，默认 "HTTP/1.1 200 OK\r\n\r\n"
       "tcp_timeout": 300000, // tcp 超时，默认 300000
       "udp_timeout": 300000 // udp 超时，默认 60000
     }

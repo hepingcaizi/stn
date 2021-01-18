@@ -10,21 +10,28 @@ Strengthen the network.
 ```c++
 {
   "setting": {
-    "daemon": false, // 默认 false
+    "daemon": false, // 默认 false，仅支持 linux
     "pid_file": "", // 默认不设置
     "log_level": "debug", // 支持 debug, info, warn, error, 默认 error
     "log_file": "", // 默认输出到 stdout
     "log_file_max": "", // log_file 不为空时生效，默认 1024，单位 kb
-    "uid": 0, // 默认不设置
-    "gid": 0 // 默认不设置
+    "uid": 0, // 默认不设置，仅支持 linux
+    "gid": 0 // 默认不设置，仅支持 linux
   },
 
   // 入口组
   "ins": [
     {
-      "protocol": "tproxy", // 指定入口协议，无默认值
+      "protocol": "tproxy", // 仅支持 linux
       "address": "0.0.0.0", // 监听地址，支持 ipv4 ipv6，默认 "::"
       "port": 1110, // 监听端口，无默认值
+      "tcp_timeout": 300000, // tcp 超时，默认 300000
+      "udp_timeout": 60000 // udp 超时，默认 60000
+    },
+    {
+      "protocol": "socks5",
+      "address": "0.0.0.0", // 监听地址，支持 ipv4 ipv6，默认 "::"
+      "port": 1080, // 监听端口，无默认值
       "tcp_timeout": 300000, // tcp 超时，默认 300000
       "udp_timeout": 60000 // udp 超时，默认 60000
     },
@@ -39,7 +46,7 @@ Strengthen the network.
     }
   ],
 
-  // 出口，虽然是数组，但只支持一个，预计支持多出口
+  // 出口，虽然是数组，但只支持一个，未来可能支持多出口
   "outs": [
     {
       "protocol": "origin",

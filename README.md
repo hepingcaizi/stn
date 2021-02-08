@@ -19,26 +19,25 @@ Strengthen the network.
     "gid": 0 // 默认不设置，仅支持 linux
   },
 
-  // 入口组
-  "ins": [
+  "in": [
     {
+      "tag": "tproxy",
       "protocol": "tproxy", // 仅支持 linux
-      "address": "0.0.0.0", // 监听地址，支持 ipv4 ipv6，默认 "::"
-      "port": 1110, // 监听端口，无默认值
+      "address": "[::]:1080", // 地址，支持 ipv4 ipv6，无默认值
       "tcp_timeout": 300000, // tcp 超时，默认 300000
       "udp_timeout": 60000 // udp 超时，默认 60000
     },
     {
+      "tag": "socks5",
       "protocol": "socks5",
-      "address": "0.0.0.0", // 监听地址，支持 ipv4 ipv6，默认 "::"
-      "port": 1080, // 监听端口，无默认值
+      "address": "[::]:1080", // 地址，支持 ipv4 ipv6，无默认值
       "tcp_timeout": 300000, // tcp 超时，默认 300000
       "udp_timeout": 60000 // udp 超时，默认 60000
     },
     {
+      "tag": "stn_in",
       "protocol": "stn",
-      "address": "::", // 监听地址，支持 ipv4 ipv6，默认 "::"
-      "port": 1111, // 监听端口，无默认值
+      "address": "[::]:1080", // 地址，支持 ipv4 ipv6，无默认值
       "password": "abcd", // 密码，无默认值
       "http_header": "", // HTTP 响应头部，默认 "HTTP/1.1 200 OK\r\n\r\n"
       "tcp_timeout": 300000, // tcp 超时，默认 300000
@@ -46,22 +45,43 @@ Strengthen the network.
     }
   ],
 
-  // 出口，虽然是数组，但只支持一个，未来可能支持多出口
-  "outs": [
+  "out": [
     {
+      "tag": "origin",
       "protocol": "origin",
+      "redirect": "127.0.0.1:80", // 重定向，默认不设置
       "tcp_timeout": 300000, // tcp 超时，默认 300000
       "udp_timeout": 60000 // udp 超时，默认 60000
     },
     {
+      "tag": "stn_out",
       "protocol": "stn",
-      "address": "1.2.3.4", // 监听地址，支持 ipv4 ipv6，无默认值
-      "port": 1111, // 监听端口，无默认值
+      "address": "0.0.0.0:1080", // 地址，无默认值
       "password": "abcd", // 密码，无默认值
       "http_header": "", // HTTP 请求头部，无默认值
       "tcp_timeout": 300000, // tcp 超时，默认 300000
       "udp_timeout": 60000 // udp 超时，默认 60000
     }
+  ],
+
+  "route": [
+    {
+      "tag": ["socks5"],
+      "network": ["tcp", "udp"],
+      "saddr": ["socks5", "1.2.3.4/24", "^a\\.com$", "file /root/addr.txt"],
+      "sport": [80, 443],
+      "daddr": ["socks5", "1.2.3.4/24", "^a\\.com$", "file /root/addr.txt"],
+      "dport": [80, 443],
+
+      "jump": "stn_out"
+    }
   ]
 }
 ```
+
+### 路由模块说明
+
+- 只有 origin 和 drop 这两个出口协议不能被路由模块再次匹配
+- 当匹配不到时，将选择第一个出口作为 jump
+- saddr 可以匹配上一个 tag
+- saddr/daddr 中，当有 / 时判断为 cidr，无 / 时判断为正则表达式。

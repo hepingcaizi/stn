@@ -13,7 +13,7 @@ Strengthen the network.
     "daemon": false, // 默认 false，仅支持 linux
     "pid_file": "", // 默认不设置
     "log_level": "debug", // 支持 debug, info, warn, error, 默认 error
-    "log_file": "", // 默认输出到 stdout
+    "log_file": "", // 默认输出到 stdout，stdout 为特殊值
     "log_file_max": "", // log_file 不为空时生效，默认 1024，单位 kb
     "uid": 0, // 默认不设置，仅支持 linux
     "gid": 0 // 默认不设置，仅支持 linux
@@ -61,6 +61,10 @@ Strengthen the network.
       "http_header": "", // HTTP 请求头部，无默认值
       "tcp_timeout": 300000, // tcp 超时，默认 300000
       "udp_timeout": 60000 // udp 超时，默认 60000
+    },
+    {
+      "tag": "drop",
+      "protocol": "drop"
     }
   ],
 

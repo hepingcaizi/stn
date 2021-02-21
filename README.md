@@ -72,9 +72,23 @@ Strengthen the network.
     {
       "tag": ["socks5"],
       "network": ["tcp", "udp"],
-      "saddr": ["socks5", "1.2.3.4/24", "^a\\.com$", "file /root/addr.txt"],
+      "saddr": [
+        "full socks5", // 完全匹配，例如 abc 匹配 abc，但不匹配 abcd
+        "substring abc", // 存在即可，例如 abc 匹配 abc，abcd，aabc
+        "domain a.com", // 域名匹配，例如 a.com 匹配 a.com，a.a.com，但不匹配 aa.com
+        "cidr 1.2.3.4/24",
+        "regex ^a\\.com$",
+        "file /root/addr.txt"
+      ],
       "sport": [80, 443],
-      "daddr": ["socks5", "1.2.3.4/24", "^a\\.com$", "file /root/addr.txt"],
+      "daddr": [
+        "string socks5",
+        "substring abc",
+        "domain a.com",
+        "cidr 1.2.3.4/24",
+        "regex ^a\\.com$",
+        "file /root/addr.txt"
+      ],
       "dport": [80, 443],
 
       "jump": "stn_out"

@@ -19,9 +19,21 @@ Strengthen the network.
     "gid": 0 // 默认不设置，仅支持 linux
   },
 
+  // 域名解析
+  "resolve": {
+    "server": ["8.8.8.8:53", "[::1]:53", "system"], // 默认 system
+    "timeout": 5000, // 默认 5000
+    "retry": 1, // 重试次数，默认 1
+    "cache_size": 256, // 缓存数目，默认 256
+    "min_ttl": 60, // 默认 60 秒
+    "max_ttl": 2147483647, // 默认 2147483647 秒
+    "ipv6_first": false, // 优先使用 ipv6 的解析结果，默认 false
+    "refresh": 3000 // 当 server 中含有 system 生效，刷新 system 的时间间隔，默认 3000
+  },
+
   "in": [
     {
-      "tag": "tproxy",
+      "tag": "tproxy", // 不能含有空格
       "protocol": "tproxy", // 仅支持 linux
       "address": "[::]:1080", // 地址，支持 ipv4 ipv6，无默认值
       "tcp_timeout": 300000, // tcp 超时，默认 300000
@@ -75,14 +87,14 @@ Strengthen the network.
       "saddr": [
         "full socks5", // 完全匹配，例如 abc 匹配 abc，但不匹配 abcd
         "substring abc", // 存在即可，例如 abc 匹配 abc，abcd，aabc
-        "domain a.com", // 域名匹配，例如 a.com 匹配 a.com，a.a.com，但不匹配 aa.com
+        "domain a.com", // 主域名匹配，例如 a.com 匹配 a.com，a.a.com，但不匹配 aa.com
         "cidr 1.2.3.4/24",
-        "regex ^a\\.com$",
+        "regex (^|\\.)a\\.com$",
         "file /root/addr.txt"
       ],
       "sport": [80, 443],
       "daddr": [
-        "string socks5",
+        "full socks5",
         "substring abc",
         "domain a.com",
         "cidr 1.2.3.4/24",

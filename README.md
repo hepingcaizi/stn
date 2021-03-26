@@ -21,14 +21,14 @@ Strengthen the network.
 
   // 域名解析
   "resolve": {
-    "server": ["8.8.8.8:53", "[::1]:53", "system"], // 默认 system
+    "server": ["8.8.8.8:53", "[::1]:53", "system"], // 并发查询，默认 system
     "timeout": 5000, // 默认 5000
     "retry": 1, // 重试次数，默认 1
     "cache_size": 256, // 缓存数目，默认 256
     "min_ttl": 60, // 默认 60 秒
     "max_ttl": 2147483647, // 默认 2147483647 秒
     "ipv6_first": false, // 优先使用 ipv6 的解析结果，默认 false
-    "refresh": 3000 // 当 server 中含有 system 生效，刷新 system 的时间间隔，默认 3000
+    "refresh": 3000 // 当 server 中含有 system 生效，刷新 system 的时间间隔，当为 0 时不刷新，默认 3000
   },
 
   "in": [
@@ -77,6 +77,17 @@ Strengthen the network.
     {
       "tag": "drop",
       "protocol": "drop"
+    },
+    {
+      "tag": "dns",
+      "protocol": "dns",
+      "server": ["8.8.8.8:53", "[::1]:53", "system"], // 并发查询，默认 system
+      "udp_timeout": 60000,
+      "retry": 1, // 重试次数，默认 1
+      "cache_size": 256, // 缓存数目，默认 256
+    "min_ttl": 60, // 默认 60 秒
+    "max_ttl": 2147483647, // 默认 2147483647 秒
+    "refresh": 3000 // 当 server 中含有 system 生效，刷新 system 的时间间隔，当为 0 时不刷新，默认 3000
     }
   ],
 
@@ -101,6 +112,14 @@ Strengthen the network.
         "regex ^a\\.com$",
         "file /root/addr.txt"
       ],
+      "dns_domain": [
+        "full socks5",
+        "substring abc",
+        "domain a.com",
+        "cidr 1.2.3.4/24",
+        "regex ^a\\.com$",
+        "file /root/addr.txt"
+      ],
       "dport": [80, 443],
 
       "jump": "stn_out"
@@ -114,4 +133,3 @@ Strengthen the network.
 - 只有 origin 和 drop 这两个出口协议不能被路由模块再次匹配
 - 当匹配不到时，将选择第一个出口作为 jump
 - saddr 可以匹配上一个 tag
-- saddr/daddr 中，当有 / 时判断为 cidr，无 / 时判断为正则表达式。
